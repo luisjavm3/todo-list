@@ -10,7 +10,7 @@ export const signupController = async (req, res, next) => {
 
     res.status(201).json({ success: true, token });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
@@ -33,7 +33,7 @@ export const loginController = async (req, res, next) => {
     const token = user.generateToken();
     res.status(200).json({ success: true, token });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 

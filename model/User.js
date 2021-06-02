@@ -35,11 +35,11 @@ UserSchema.pre('save', async function (next) {
 });
 
 UserSchema.methods.generateToken = function () {
-  const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+  const ACCESS_TOKEN_SECRECT = process.env.ACCESS_TOKEN_SECRECT;
   const ACCESS_TOKEN_EXPIRATION_TIME = process.env.ACCESS_TOKEN_EXPIRATION_TIME;
   const payload = { _id: this._id };
 
-  return jwt.sign(payload, ACCESS_TOKEN_SECRET, {
+  return jwt.sign(payload, ACCESS_TOKEN_SECRECT, {
     expiresIn: ACCESS_TOKEN_EXPIRATION_TIME,
   });
 };

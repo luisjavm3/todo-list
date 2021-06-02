@@ -5,6 +5,7 @@ import cors from 'cors';
 import DBConnection from './config/DBConnection.js';
 import errorHandler from './middlewares/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
+import todoRoutes from './routes/todoRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,7 @@ app.use(cors());
 
 //Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/todos', todoRoutes);
 
 // Error handler
 app.use(errorHandler);
