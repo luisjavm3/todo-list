@@ -19,6 +19,10 @@ const errorHandler = (err, req, res, next) => {
     error = new ErrorResponse(`The ${key}: ${value} already exists.`, 400);
   }
 
+  if (err.name === 'TokenExpiredError') {
+    error = new ErrorResponse(err.message, 401);
+  }
+
   const jsonResponse = {
     success: false,
     error: error?.message || err?.message || 'Unknown server error.',
