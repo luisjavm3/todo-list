@@ -50,11 +50,11 @@ export const updateTodoController = async (req, res, next) => {
 
 export const deleteTodoController = async (req, res, next) => {
   const user = req.user;
-  const todo = req.body;
+  const { todoId } = req.params;
   let deletedTodo;
 
   try {
-    deletedTodo = await deleteTodo(todo, user);
+    deletedTodo = await deleteTodo(todoId, user);
   } catch (error) {
     return next(error);
   }

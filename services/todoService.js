@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 import { ADMIN, SUPER, USER } from '../config/roles.js';
 import ErrorResponse from '../utils/ErrorResponse.js';
+const { Types } = mongoose;
 
 export const findAllTodos = async (userId, userRole) => {
   let todos;
@@ -87,7 +88,6 @@ export const createTodo = async (todo) => {
 };
 
 export const updateTodo = async (todo, user) => {
-  const { Types } = mongoose;
   const doneIsSettled = ['true', 'false'].includes(String(todo.done));
 
   if (!todo.name || !doneIsSettled || !todo.userId) {
@@ -122,4 +122,33 @@ export const updateTodo = async (todo, user) => {
   return updatedTodo;
 };
 
-export const deleteTodo = async (todo, user) => {};
+export const deleteTodo = async (todoId, user) => {
+  let todo;
+
+  if (!Types.ObjectId.isValid(todoId)) {
+    const error = new ErrorResponse('The Id of the todo is invalid.', 401);
+    throw error;
+  }
+
+  try {
+    todo = await Todo.findById(todoId);
+  } catch (err) {
+    const error = new ErrorResponse(`There is no Todo with the Id: ${todoId}`);
+    throw error;
+  }
+
+  console.log(todo.userId);
+  console.log(user._id);
+
+  if (String(todo.userId) !== String(user._id)) {
+    const error = new ErrorResponse(
+      'Attempting to delete a todo that does not belong to you.',
+      400
+    );
+    throw error;
+  }
+
+  const deletedTodo = await Todo.findByIdAndDelete(todoId);
+
+  return deletedTodo;
+};
