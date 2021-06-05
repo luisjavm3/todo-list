@@ -87,39 +87,31 @@ export const createTodo = async (todo) => {
   return await Todo.create(todo);
 };
 
-export const updateTodo = async (todo, user) => {
-  const doneIsSettled = ['true', 'false'].includes(String(todo.done));
+export const updateTodo = async (todoId, newData, user) => {
+  let todo;
 
-  if (!todo.name || !doneIsSettled || !todo.userId) {
-    const error = new ErrorResponse('The data of the todo is incomplete.', 400);
-    throw error;
+  if (!Types.ObjectId.isValid(todoId)) {
+    throw new ErrorResponse('The id of the todo is invalid.', 400);
   }
 
-  if (!Types.ObjectId.isValid(todo._id)) {
-    const error = new ErrorResponse('The _id of the todo is wrong.', 400);
-    throw error;
+  try {
+    todo = await Todo.findById(todoId);
+  } catch (error) {
+    throw new ErrorResponse(`There is no todo with the id: ${todoId}`, 401);
   }
 
-  if (!Types.ObjectId.isValid(todo.userId)) {
-    const error = new ErrorResponse('The userId is wrong.', 400);
-    throw error;
+  if (String(todo.userId) !== String(user._id)) {
+    throw new ErrorResponse('The todo does not belong to you.', 400);
   }
 
-  if (todo.userId != user._id) {
-    const error = new ErrorResponse(
-      'Attempting to update a todo that does not belong to you.',
-      400
-    );
-    throw error;
-  }
+  newData = {
+    name: newData?.name || todo.name,
+    done: newData?.done || todo.done,
+  };
 
-  const updatedTodo = await Todo.findByIdAndUpdate(
-    todo._id,
-    { name: todo.name, done: todo.done },
-    { new: true }
-  );
+  console.log(newData);
 
-  return updatedTodo;
+  return await Todo.findByIdAndUpdate(todo._id, newData, { new: true });
 };
 
 export const deleteTodo = async (todoId, user) => {

@@ -36,11 +36,12 @@ export const createTodoController = async (req, res, next) => {
 
 export const updateTodoController = async (req, res, next) => {
   const user = req.user;
-  const todo = req.body;
+  const { todoId } = req.params;
+  const newData = req.body;
   let updatedTodo;
 
   try {
-    updatedTodo = await updateTodo(todo, user);
+    updatedTodo = await updateTodo(todoId, newData, user);
   } catch (error) {
     return next(error);
   }
