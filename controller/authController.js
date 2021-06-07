@@ -16,7 +16,6 @@ export const signupController = async (req, res, next) => {
 
 export const loginController = async (req, res, next) => {
   const { username, password } = req.body;
-  console.log(req.body);
 
   if (!username || !password) {
     const error = new ErrorResponse('Provide both username and password', 400);

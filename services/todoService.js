@@ -113,8 +113,6 @@ export const updateTodo = async (todoId, newData, user) => {
     done: newData?.done || todo.done,
   };
 
-  console.log(newData);
-
   return await Todo.findByIdAndUpdate(todo._id, newData, {
     new: true,
     runValidators: true,
@@ -135,9 +133,6 @@ export const deleteTodo = async (todoId, user) => {
     const error = new ErrorResponse(`There is no Todo with the Id: ${todoId}`);
     throw error;
   }
-
-  console.log(todo.userId);
-  console.log(user._id);
 
   if (String(todo.userId) !== String(user._id)) {
     const error = new ErrorResponse(
