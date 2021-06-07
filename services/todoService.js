@@ -104,6 +104,10 @@ export const updateTodo = async (todoId, newData, user) => {
     throw new ErrorResponse('The todo does not belong to you.', 400);
   }
 
+  if (!newData.name && !newData.done) {
+    throw new ErrorResponse('Insert some data to change.', 400);
+  }
+
   newData = {
     name: newData?.name || todo.name,
     done: newData?.done || todo.done,
@@ -111,7 +115,10 @@ export const updateTodo = async (todoId, newData, user) => {
 
   console.log(newData);
 
-  return await Todo.findByIdAndUpdate(todo._id, newData, { new: true });
+  return await Todo.findByIdAndUpdate(todo._id, newData, {
+    new: true,
+    runValidators: true,
+  });
 };
 
 export const deleteTodo = async (todoId, user) => {
