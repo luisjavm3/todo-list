@@ -57,3 +57,23 @@ export const updateUser = async (LoggedUser, newData, userId) => {
     runValidators: true,
   });
 };
+
+export const deleteUser = async (LoggedUser, userId) => {
+  let user;
+
+  if (!Types.ObjectId.isValid(userId)) {
+    throw new ErrorResponse(`${userID} is not a valid Id.`, 400);
+  }
+
+  try {
+    user = await User.findById(userId);
+  } catch (error) {
+    throw new ErrorResponse(`Could not find a user with the Id: ${userId}.`);
+  }
+
+  if ([ADMIN, SUPER].includes(user.role) && LoggedUser.role === ADMIN) {
+    throw new ErrorResponse('Access Forbidden.', 403);
+  }
+
+  return await User.findByIdAndDelete(userId);
+};
