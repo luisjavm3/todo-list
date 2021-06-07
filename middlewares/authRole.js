@@ -1,8 +1,5 @@
-import ErrorResponse from '../utils/ErrorResponse';
-
 const authRole = (roles) => (req, res, next) => {
   const { role } = req.user;
-  console.log(role);
 
   if (Array.isArray(roles)) {
     if (roles.includes(role)) return next();
